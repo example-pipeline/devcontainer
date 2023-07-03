@@ -43,7 +43,7 @@ RUN curl ${NIX_INSTALL_SCRIPT} | sh
 RUN . .nix-profile/etc/profile.d/nix.sh && nix-channel --update
 
 # Copy our nix expression into the container.
-COPY --chown=vscode flake.nix /home/vscode/
+COPY --chown=vscode flake.* /home/vscode/
 
 # Install the Flake contents.
 RUN . .nix-profile/etc/profile.d/nix.sh && nix profile install .
