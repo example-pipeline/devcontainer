@@ -15,6 +15,7 @@
         paths = with pkgs; [
           astyle # Code formatter for C.
           azure-cli # Azure CLI.
+          azure-storage-azcopy # Azure CLI copy tool.
           bat # Colourized cat.
           cargo # Rust tooling.
           ccls # C LSP Server.
