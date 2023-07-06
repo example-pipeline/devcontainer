@@ -35,7 +35,6 @@
           gradle # Build tool.
           graphviz # Build SVGs of graphs (maths graphs).
           htop # Fancy version of top.
-          ibm-plex # Font.
           imagemagick # Image processing.
           jdk # Development.
           jq # JSON query at the CLI.
@@ -47,7 +46,6 @@
           maven # Java build tooling.
           minicom # Serial monitor.
           neovim # Better version of Vim.
-          nerdfonts # Fonts with nerd glyphs for terminals.
           ninja # Used by Raspberry Pi Pico SDK, build tool.
           nmap # Port scanner.
           nodejs-18_x # Node LTS version.
@@ -61,7 +59,6 @@
           rustc # Rust compiler.
           rustfmt # Rust formatter.
           silver-searcher # Fast grep (ag).
-          source-code-pro # Font.
           sumneko-lua-language-server # LSP for Lua.
           terraform # Infrastructure management language.
           terraform-ls # Terraform Language Server.

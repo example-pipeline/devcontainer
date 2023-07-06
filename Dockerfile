@@ -11,7 +11,8 @@ FROM mcr.microsoft.com/vscode/devcontainers/base:buster
 # https://discourse.nixos.org/t/how-do-nix-profiles-and-flakes-fit-together/28139/20
 
 # Install packages required to add users and install Nix
-RUN apt-get update && apt-get install -y curl bzip2 adduser
+# libvshadow-utils is used by Podman to run rootless.
+RUN apt-get update && apt-get install -y curl bzip2 adduser libvshadow-utils
 
 # Nix requires ownership of /nix.
 RUN mkdir -m 0755 /nix && chown vscode /nix
@@ -30,6 +31,9 @@ ENV USER vscode
 # Change our working directory to $HOME
 WORKDIR /home/vscode
 
+# Copy our nix expression into the container.
+COPY --chown=vscode flake.* /home/vscode/
+
 # Install Nix
 ARG NIX_INSTALL_SCRIPT=https://releases.nixos.org/nix/nix-2.16.1/install
 RUN curl ${NIX_INSTALL_SCRIPT} | sh
@@ -40,15 +44,13 @@ RUN curl ${NIX_INSTALL_SCRIPT} | sh
 # without using Docker's own `ENV` command, so we need to prefix
 # our nix commands with `. .nix-profile/etc/profile.d/nix.sh` to ensure
 # nix manages our $PATH appropriately.
-RUN . .nix-profile/etc/profile.d/nix.sh && nix-channel --update
 
-# Copy our nix expression into the container.
-COPY --chown=vscode flake.* /home/vscode/
-
-# Install the Flake contents.
-RUN . .nix-profile/etc/profile.d/nix.sh && nix profile install .
+# Install the Flake contents and clear disk space.
+RUN . .nix-profile/etc/profile.d/nix.sh \
+  && nix-channel --update \
+  && nix profile install . \
+	&& nix-collect-garbage \
+	&& nix-store --optimize
 
 # Add all the stuff to the path.
 ENV PATH="${PATH}:~/.nix-profile/bin"
-
-VOLUME /nix
