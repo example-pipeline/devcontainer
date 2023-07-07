@@ -31,15 +31,6 @@ RUN mkdir -p /home/vscode/.local/share/containers && \
     chmod 644 /etc/containers/containers.conf && \
     chmod 644 /etc/containers/policy.json
 
-RUN mkdir -p /var/lib/shared/overlay-images \
-             /var/lib/shared/overlay-layers \
-             /var/lib/shared/vfs-images \
-             /var/lib/shared/vfs-layers && \
-    touch /var/lib/shared/overlay-images/images.lock && \
-    touch /var/lib/shared/overlay-layers/layers.lock && \
-    touch /var/lib/shared/vfs-images/images.lock && \
-    touch /var/lib/shared/vfs-layers/layers.lock
-
 # Back to Nix configuration after this.
 
 # Nix requires ownership of /nix.

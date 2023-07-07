@@ -25,6 +25,7 @@
           docker # Container tooling.
           entr # Execute command when files change.
           fd # Find that respects .gitignore.
+          fuse-overlayfs # Filesystem for rooless podman.
           fzf # Fuzzy search.
           gcc # Compiler.
           git # Source code management tool.
@@ -51,6 +52,7 @@
           nmap # Port scanner.
           nodejs-18_x # Node LTS version.
           podman # Docker alternative.
+          podman-compose # Alternative to docker-compose.
           powerline # Status line UI fancy.
           python310Packages.python-lsp-server
           python311 # Python 3.11.
@@ -59,6 +61,7 @@
           rust-analyzer # Rust language server.
           rustc # Rust compiler.
           rustfmt # Rust formatter.
+          shadow # Required to run podman containers in podman.
           silver-searcher # Fast grep (ag).
           sumneko-lua-language-server # LSP for Lua.
           terraform # Infrastructure management language.
@@ -66,6 +69,7 @@
           tflint # Terraform linting tool.
           tmux # Terminal multiplexer.
           tree # Tree of file systems.
+          tunctl # Utility for controlling tuntap interfaces. Required to start podman containers with open ports.
           unzip # Unzip files.
           urlscan # Find URLs in your terminal
           wget # curl, but it follows links automatically etc.
