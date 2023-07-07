@@ -11,8 +11,36 @@ FROM mcr.microsoft.com/vscode/devcontainers/base:buster
 # https://discourse.nixos.org/t/how-do-nix-profiles-and-flakes-fit-together/28139/20
 
 # Install packages required to add users and install Nix
-# libvshadow-utils is used by Podman to run rootless.
-RUN apt-get update && apt-get install -y curl bzip2 adduser libvshadow-utils
+RUN apt-get update && apt-get install -y curl bzip2 adduser
+
+# Podman section.
+# Podman is a nuisance to set up.
+# https://github.com/containers/podman/blob/main/contrib/podmanimage/stable/Containerfile
+
+# Set uid for podman.
+RUN echo -e "vscode:1:999\nvscode:1001:64535" > /etc/subuid;
+RUN echo -e "vscode:1:999\nvscode:1001:64535" > /etc/subgid;
+
+ARG _REPO_URL="https://raw.githubusercontent.com/containers/podman/main/contrib/podmanimage/stable"
+ADD $_REPO_URL/containers.conf /etc/containers/containers.conf
+ADD $_REPO_URL/podman-containers.conf /home/vscode/.config/containers/containers.conf
+ADD ./policy.json /etc/containers/policy.json
+
+RUN mkdir -p /home/vscode/.local/share/containers && \
+    chown vscode:vscode -R /home/vscode && \
+    chmod 644 /etc/containers/containers.conf && \
+    chmod 644 /etc/containers/policy.json
+
+RUN mkdir -p /var/lib/shared/overlay-images \
+             /var/lib/shared/overlay-layers \
+             /var/lib/shared/vfs-images \
+             /var/lib/shared/vfs-layers && \
+    touch /var/lib/shared/overlay-images/images.lock && \
+    touch /var/lib/shared/overlay-layers/layers.lock && \
+    touch /var/lib/shared/vfs-images/images.lock && \
+    touch /var/lib/shared/vfs-layers/layers.lock
+
+# Back to Nix configuration after this.
 
 # Nix requires ownership of /nix.
 RUN mkdir -m 0755 /nix && chown vscode /nix
@@ -49,8 +77,13 @@ RUN curl ${NIX_INSTALL_SCRIPT} | sh
 RUN . .nix-profile/etc/profile.d/nix.sh \
   && nix-channel --update \
   && nix profile install . \
-	&& nix-collect-garbage \
-	&& nix-store --optimize
+  && nix-collect-garbage \
+  && nix-store --optimize
 
 # Add all the stuff to the path.
-ENV PATH="${PATH}:~/.nix-profile/bin"
+ENV PATH="${PATH}:/home/vscode/.nix-profile/bin"
+
+USER root
+RUN setcap cap_setuid=ep `readlink -f /home/vscode/.nix-profile/bin/newuidmap`
+RUN setcap cap_setgid=ep `readlink -f /home/vscode/.nix-profile/bin/newgidmap`
+USER vscode

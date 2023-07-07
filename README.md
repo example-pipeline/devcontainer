@@ -19,11 +19,11 @@ The host machine must have:
 ### build
 
 ```
-docker build --progress=plain -t devcontainer:latest .
+podman build --progress=plain -t devcontainer:latest .
 ```
 
 ### run
 
 ```
-docker run --rm -it devcontainer:latest
+podman run --rm -it devcontainer:latest
 ```
